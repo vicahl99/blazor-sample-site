@@ -8,4 +8,9 @@
         <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\GameOver.gif" />
+      <Resource Include="Resources\GameOver.gif" />
+    </ItemGroup>
+
 </Project>

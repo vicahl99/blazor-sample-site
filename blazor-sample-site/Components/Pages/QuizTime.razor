@@ -1,0 +1,58 @@
+﻿@page "/quiz"
+@using blazor_sample_site.Services
+@using blazor_sample_site.Models
+@inject IQuizService QuizService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h3>Quiz</h3>
+
+@if (loading)
+{
+    <p>Laddar frågor...</p>
+}
+else if (QuizService.IsFinished)
+{
+    Navigation.NavigateTo("/result");
+}
+else
+{
+    <p>@currentQuestion.Text</p>
+
+    @for (int i = 0; i < currentQuestion.Options.Count; i++)
+    {
+        <button class="btn btn-primary m-1" @onclick="() => SubmitAnswer(i)">
+            @currentQuestion.Options[i]
+        </button>
+    }
+}
+
+@code {
+    private Question? currentQuestion;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await QuizService.LoadQuestionsAsync();
+        currentQuestion = QuizService.GetCurrentQuestion();
+        loading = false;
+    }
+
+    private void SubmitAnswer(int selectedIndex)
+    {
+        QuizService.SubmitAnswer(selectedIndex);
+
+        if (QuizService.HasNextQuestion())
+        {
+            QuizService.NextQuestion();
+            currentQuestion = QuizService.GetCurrentQuestion();
+        }
+        else
+        {
+            QuizService.NextQuestion(); // Sätter IsFinished = true
+            Navigation.NavigateTo("/result");
+        }
+    }
+}

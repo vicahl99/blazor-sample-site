@@ -1,4 +1,4 @@
-﻿namespace blazor_sample_site.Data;
+﻿namespace blazor_sample_site.Models;
 
     public class SnakeCell
     {

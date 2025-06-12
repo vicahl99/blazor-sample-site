@@ -45,7 +45,7 @@ namespace blazor_sample_site.Services
 
         public Question? GetCurrentQuestion()
         {
-            if (_currentIndex < _questions.Count)
+            if (_currentIndex >= 0 && _currentIndex < _questions.Count)
                 return _questions[_currentIndex];
             return null;
         }
@@ -63,9 +63,14 @@ namespace blazor_sample_site.Services
 
         public void NextQuestion()
         {
-            _currentIndex++;
-            if (_currentIndex >= _questions.Count)
+            if (!IsFinished && _currentIndex + 1 < _questions.Count)
+            {
+                _currentIndex++;
+            }
+            else
+            {
                 IsFinished = true;
+            }
         }
 
         public bool HasNextQuestion() => _currentIndex + 1 < _questions.Count;

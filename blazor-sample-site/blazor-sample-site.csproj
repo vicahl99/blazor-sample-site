@@ -9,8 +9,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Resources\GameOver.gif" />
-      <Resource Include="Resources\GameOver.gif" />
+        <None Remove="Resources\GameOver.gif"/>
+        <Resource Include="Resources\GameOver.gif"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MudBlazor" Version="8.7.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="wwwroot\lib\"/>
     </ItemGroup>
 
 </Project>

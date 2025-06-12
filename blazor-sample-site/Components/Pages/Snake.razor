@@ -1,6 +1,7 @@
 ﻿@page "/snake"
 @inject IJSRuntime js
-@using blazor_sample_site.Models;
+@using blazor_sample_site.Models
+@using Direction = blazor_sample_site.Models.Direction
 @rendermode InteractiveServer
 
 <style>
@@ -31,13 +32,13 @@
     <div class="game-container"
          tabindex="0"
          @onkeydown="ControlSnakeDirection">
-        @for (int row = 0; row < 20; row++)
+        @for (var row = 0; row < 20; row++)
         {
-            @for (int col = 0; col < 20; col++)
+            @for (var col = 0; col < 20; col++)
             {
-                bool isSnakeCell = IsSnakeCell(row, col);
-                bool isSnakeHead = IsSnakeHead(row, col);
-                bool isFoodCell = IsFoodCell(row, col);
+                var isSnakeCell = IsSnakeCell(row, col);
+                var isSnakeHead = IsSnakeHead(row, col);
+                var isFoodCell = IsFoodCell(row, col);
 
                 <div class="cell @(isSnakeCell && !isSnakeHead ? "snake-body" : "")">
                     @if (isSnakeCell)
@@ -62,7 +63,7 @@
 
     <div class="footer">
         Designed and Developed by, <span class="highlighted-name">Theodor Källberg</span>
-        <br />
+        <br/>
         <span class="design-sucks">Design Sucks, still check out my website?</span>
         <a href="https://github.com/vicahl99" target="_blank" class="website-link">Visit My Website</a>
     </div>
@@ -71,19 +72,22 @@
 
 @code
 {
+
     #region [SNAKE DEFAULT VALUES]
 
     SnakeCell currentCell;
-    
-    Score score = new();
+
+    readonly Score score = new();
 
     // Define the Snake's initial direction
     Direction snakeDirection = Direction.RIGHT;
 
     readonly List<SnakeCell> snakeBody = new();
+
     #endregion
 
     #region [GAME DEFAULT SETTINGS]
+
     // Snake speed in milliseconds
     readonly int gameInterval = 800;
 
@@ -96,6 +100,7 @@
     #endregion
 
     #region [METHODS]
+
     protected override async Task OnInitializedAsync()
     {
         InitializeGame();
@@ -105,7 +110,7 @@
     private void InitializeGame()
     {
         // Define the Snake's initial position
-        currentCell = new() { Row = 10, Col = 10 };
+        currentCell = new SnakeCell { Row = 10, Col = 10 };
 
         // Initialize the snake's size to 1
         score.CurrentScore = 1;
@@ -128,6 +133,7 @@
                 score.CurrentScore++;
                 GenerateFood();
             }
+
             await Task.Delay(gameInterval);
             StateHasChanged();
         }
@@ -147,19 +153,19 @@
         {
             case "ArrowUp":
 
-                    snakeDirection = Direction.UP;
+                snakeDirection = Direction.UP;
                 break;
             case "ArrowRight":
 
-                    snakeDirection = Direction.RIGHT;
+                snakeDirection = Direction.RIGHT;
                 break;
             case "ArrowDown":
 
-                    snakeDirection = Direction.DOWN;
+                snakeDirection = Direction.DOWN;
                 break;
             case "ArrowLeft":
 
-                    snakeDirection = Direction.LEFT;
+                snakeDirection = Direction.LEFT;
                 break;
         }
     }
@@ -169,13 +175,13 @@
     {
         switch (snakeDirection)
         {
-            case Direction.UP: 
+            case Direction.UP:
                 currentCell.Row--;
                 break;
-            case Direction.RIGHT: 
+            case Direction.RIGHT:
                 currentCell.Col++;
                 break;
-            case Direction.DOWN: 
+            case Direction.DOWN:
                 currentCell.Row++;
                 break;
             case Direction.LEFT:
@@ -198,7 +204,7 @@
 
     private SnakeCell CloneSnakeCell()
     {
-        return new SnakeCell() { Row = currentCell.Row, Col= currentCell.Col };
+        return new SnakeCell { Row = currentCell.Row, Col = currentCell.Col };
     }
 
     // Check for collision between the Snake and food
@@ -212,20 +218,22 @@
         if (currentCell.Row < 0 || currentCell.Row >= 20 || currentCell.Col < 0 || currentCell.Col >= 20)
         {
             isGameOver = true;
-            bool isResetGame = await js.InvokeAsync<bool>("ResetGamePopup", score.CurrentScore);
+            var isResetGame = await js.InvokeAsync<bool>("ResetGamePopup", score.CurrentScore);
             if (isResetGame)
             {
                 if (score.CurrentScore > score.TopScore)
                 {
                     score.TopScore = score.CurrentScore;
                 }
+
                 ResetGame();
             }
             else
             {
-                await js.InvokeVoidAsync("navigateToWebsite", $"https://github.com/vicahl99");
+                await js.InvokeVoidAsync("navigateToWebsite", "https://github.com/vicahl99");
             }
         }
+
         isGameOver = false;
     }
 
@@ -235,9 +243,11 @@
         isGameOver = false;
         OnInitializedAsync();
     }
+
     #endregion
 
     #region [CSS METHODS]
+
     //This method checks whether the cell at the given row and col coordinates belongs to the snake's body.
     private bool IsSnakeCell(int row, int col)
     {
@@ -255,5 +265,7 @@
     {
         return row == snakeBody[0].Row && col == snakeBody[0].Col;
     }
+
     #endregion
+
 }

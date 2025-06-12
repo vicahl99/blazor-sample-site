@@ -1,8 +1,10 @@
 ﻿@page "/quiz"
-@using blazor_sample_site.Services
+@using blazor_sample_site.Components.Shared
 @using blazor_sample_site.Models
+@using blazor_sample_site.Services
 @inject IQuizService QuizService
 @inject NavigationManager Navigation
+@inject IDialogService DialogService
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -13,25 +15,30 @@
 {
     <p>Laddar frågor...</p>
 }
-else if (QuizService.IsFinished)
+else if (showDialog)
 {
-    Navigation.NavigateTo("/result");
+    <p>Quiz finished!</p>
 }
-else
+else if (currentQuestion != null && currentQuestion.Options != null && currentQuestion.Options.Count > 0)
 {
     <p>@currentQuestion.Text</p>
 
-    @for (int i = 0; i < currentQuestion.Options.Count; i++)
+    @for (var i = 0; i < currentQuestion.Options.Count; i++)
     {
-        <button class="btn btn-primary m-1" @onclick="() => SubmitAnswer(i)">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => SubmitAnswer(i)">
             @currentQuestion.Options[i]
-        </button>
+        </MudButton>
     }
+}
+else
+{
+    <p>No question available.</p>
 }
 
 @code {
     private Question? currentQuestion;
     private bool loading = true;
+    private bool showDialog;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,8 +58,18 @@ else
         }
         else
         {
-            QuizService.NextQuestion(); // Sätter IsFinished = true
-            Navigation.NavigateTo("/result");
+            showDialog = true;
+            OpenDialogAsync();
         }
+
+        StateHasChanged();
     }
+
+     private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<PopupupModal>("Simple Dialog", options);
+    }
+
 }

@@ -1,10 +1,11 @@
 using blazor_sample_site.Components;
+using blazor_sample_site.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 var app = builder.Build();
 

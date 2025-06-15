@@ -5,7 +5,7 @@
 @inject IQuizService QuizService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
-@rendermode InteractiveServer
+
 
 <PageTitle>Home</PageTitle>
 
@@ -25,8 +25,9 @@ else if (currentQuestion != null && currentQuestion.Options != null && currentQu
 
     @for (var i = 0; i < currentQuestion.Options.Count; i++)
     {
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => SubmitAnswer(i)">
-            @currentQuestion.Options[i]
+        var i1 = i;
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => SubmitAnswer(i1)">
+            @currentQuestion.Options[i1]
         </MudButton>
     }
 }
@@ -65,7 +66,7 @@ else
         StateHasChanged();
     }
 
-     private Task OpenDialogAsync()
+    private Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 

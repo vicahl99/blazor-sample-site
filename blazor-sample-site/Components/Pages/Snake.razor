@@ -2,7 +2,7 @@
 @inject IJSRuntime js
 @using blazor_sample_site.Models
 @using Direction = blazor_sample_site.Models.Direction
-@rendermode InteractiveServer
+
 
 <style>
     body {
@@ -19,6 +19,7 @@
 
 <div class="game-background">
     <h1>Snake Game</h1>
+
 
     <div class="game-info">
         <div>
@@ -72,6 +73,7 @@
 
 @code
 {
+    private bool loading = true;
 
     #region [SNAKE DEFAULT VALUES]
 
@@ -105,6 +107,7 @@
     {
         InitializeGame();
         await StartGame();
+        loading = false;
     }
 
     private void InitializeGame()
